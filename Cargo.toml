@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "kernel",
+    "kernel-aarch64",
+    "kernel-x86_64"
+]
