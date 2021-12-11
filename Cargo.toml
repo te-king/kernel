@@ -4,3 +4,7 @@ members = [
     "kernel-aarch64",
     "kernel-x86_64"
 ]
+
+[workspace.metadata.bootuefi]
+run-args = ["-serial", "stdio", "-smp", "4"]
+test-args = ["-serial", "stdio", "-smp", "4"]

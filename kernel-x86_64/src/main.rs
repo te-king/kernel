@@ -74,6 +74,6 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         }
     }
 
-    libertyos_kernel::kernel_main();
+    kernel::kernel_main();
     panic!("execution endpoint")
 }
