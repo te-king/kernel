@@ -1,0 +1,10 @@
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
+
+[target.aarch64-unknown-uefi]
+rustflags = ["-Cpanic=abort"]
+
+[target.x86_64-unknown-uefi]
+rustflags = ["-Cpanic=abort"]
+runner = "bootuefi"

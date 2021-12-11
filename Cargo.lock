@@ -3,6 +3,81 @@
 version = 3
 
 [[package]]
+name = "acpi"
+version = "4.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "55237649c6e747ea67e5ed45125af5e6a35ea1250c5e44995eb6049a955bd004"
+dependencies = [
+ "bit_field",
+ "log",
+ "rsdp",
+]
+
+[[package]]
+name = "aml"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e6d6b9450ae5a8297444719e0030db6b098cab28ced173eef115e339555cfdc6"
+dependencies = [
+ "bit_field",
+ "bitvec",
+ "byteorder",
+ "log",
+ "spinning_top",
+]
+
+[[package]]
+name = "bit_field"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcb6dd1c2376d2e096796e234a70e17e94cc2d5d54ff8ce42b28cef1d0d359a4"
+
+[[package]]
+name = "bitflags"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "bitvec"
+version = "0.22.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5237f00a8c86130a0cc317830e558b966dd7850d48a953d998c813f01a41b527"
+dependencies = [
+ "funty",
+ "radium",
+ "tap",
+ "wyz",
+]
+
+[[package]]
+name = "buddy_system_allocator"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "55703ac5f02c246ce6158eff6ae2dd9e9069917969682b6831f8a5123abb8a48"
+dependencies = [
+ "spin",
+]
+
+[[package]]
+name = "byteorder"
+version = "1.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
+
+[[package]]
+name = "cfg-if"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "funty"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1847abb9cb65d566acd5942e94aea9c8f547ad02c98e1649326fc0e8910b8b1e"
+
+[[package]]
 name = "kernel"
 version = "0.1.0"
 
@@ -13,3 +88,203 @@ version = "0.1.0"
 [[package]]
 name = "kernel-x86_64"
 version = "0.1.0"
+dependencies = [
+ "acpi",
+ "aml",
+ "buddy_system_allocator",
+ "kernel",
+ "modular-bitfield",
+ "uart_16550",
+ "uefi",
+ "x86_64",
+]
+
+[[package]]
+name = "lock_api"
+version = "0.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "712a4d093c9976e24e7dbca41db895dabcbac38eb5f4045393d17a95bdfb1109"
+dependencies = [
+ "scopeguard",
+]
+
+[[package]]
+name = "log"
+version = "0.4.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
+dependencies = [
+ "cfg-if",
+]
+
+[[package]]
+name = "modular-bitfield"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a53d79ba8304ac1c4f9eb3b9d281f21f7be9d4626f72ce7df4ad8fbde4f38a74"
+dependencies = [
+ "modular-bitfield-impl",
+ "static_assertions",
+]
+
+[[package]]
+name = "modular-bitfield-impl"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a7d5f7076603ebc68de2dc6a650ec331a062a13abaa346975be747bbfa4b789"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "proc-macro2"
+version = "1.0.33"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb37d2df5df740e582f28f8560cf425f52bb267d872fe58358eadb554909f07a"
+dependencies = [
+ "unicode-xid",
+]
+
+[[package]]
+name = "quote"
+version = "1.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38bc8cc6a5f2e3655e0899c1b848643b2562f853f114bfec7be120678e3ace05"
+dependencies = [
+ "proc-macro2",
+]
+
+[[package]]
+name = "radium"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "643f8f41a8ebc4c5dc4515c82bb8abd397b527fc20fd681b7c011c2aee5d44fb"
+
+[[package]]
+name = "rsdp"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66d3add2fc55ef37511bcf81a08ee7a09eff07b23aae38b06a29024a38c604b1"
+dependencies = [
+ "log",
+]
+
+[[package]]
+name = "scopeguard"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
+
+[[package]]
+name = "spin"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13287b4da9d1207a4f4929ac390916d64eacfe236a487e9a9f5b3be392be5162"
+
+[[package]]
+name = "spinning_top"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75adad84ee84b521fb2cca2d4fd0f1dab1d8d026bda3c5bea4ca63b5f9f9293c"
+dependencies = [
+ "lock_api",
+]
+
+[[package]]
+name = "static_assertions"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
+name = "syn"
+version = "1.0.82"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8daf5dd0bb60cbd4137b1b587d2fc0ae729bc07cf01cd70b36a1ed5ade3b9d59"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-xid",
+]
+
+[[package]]
+name = "tap"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
+
+[[package]]
+name = "uart_16550"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "65ad019480ef5ff8ffe66d6f6a259cd87cf317649481394981db1739d844f374"
+dependencies = [
+ "bitflags",
+ "x86_64",
+]
+
+[[package]]
+name = "ucs2"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bad643914094137d475641b6bab89462505316ec2ce70907ad20102d28a79ab8"
+dependencies = [
+ "bit_field",
+]
+
+[[package]]
+name = "uefi"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f8451cf8ee8c9c6219a0eb57e4045f6212976888e5295ebca1afccbf65ae9f4"
+dependencies = [
+ "bitflags",
+ "log",
+ "ucs2",
+ "uefi-macros",
+]
+
+[[package]]
+name = "uefi-macros"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e012a5bc55f3fd92ba8f3444b97fdc4a73afb8bd9edd0ac5a9c3d5d6182090ea"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "unicode-xid"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
+
+[[package]]
+name = "volatile"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e4c2dbd44eb8b53973357e6e207e370f0c1059990df850aca1eca8947cf464f0"
+
+[[package]]
+name = "wyz"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "129e027ad65ce1453680623c3fb5163cbf7107bfe1aa32257e7d0e63f9ced188"
+dependencies = [
+ "tap",
+]
+
+[[package]]
+name = "x86_64"
+version = "0.14.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbc6ed1ed2cd4536b083c34041aff7b84448ee25ac4aa5e9d54802ce226f9815"
+dependencies = [
+ "bit_field",
+ "bitflags",
+ "volatile",
+]
