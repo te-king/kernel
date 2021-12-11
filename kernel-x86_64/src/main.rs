@@ -6,7 +6,7 @@
 extern crate alloc;
 
 use core::ptr::slice_from_raw_parts_mut;
-use aml::{AmlContext, AmlError};
+use aml::{AmlContext, AmlError, AmlHandle, AmlName};
 use uart_16550::SerialPort;
 use uefi::table::boot::{MemoryDescriptor, MemoryType};
 use uefi::prelude::*;
@@ -14,9 +14,10 @@ use kernel::log::STDOUT;
 use kernel::logln;
 use kernel::proc::{EventRegister, Process, VirtualMemory};
 
+mod dev;
+
 mod acpi;
 mod allocator;
-mod devices;
 mod interrupts;
 mod memory;
 mod panic;
@@ -58,13 +59,29 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         *STDOUT.lock() = Some(box SerialPort::new(0x03f8));
     }
 
-    // dump device tree from aml
-    let aml = acpi::debug_acpi_aml(&system_table);
+    // read aml
+    // we dont know where the serial port is yet so we get no stdout
+    let aml = acpi::create_aml_context(&system_table)
+        .expect("failed to read acpi tables");
 
-    match aml {
-        Ok(aml) => logln!("{:?}", aml.namespace),
-        Err(aml_err) => logln!("AML Error: {:?}", aml_err)
-    }
+    let com_crs_path = AmlName::from_str("\\_SB_.PCI0.ISA_.COM1._CRS")
+        .expect("incorrectly formatted COM1 path");
+
+    match aml.namespace
+        .get_by_path(&com_crs_path)
+        .and_then(|v| v.as_buffer(&aml)) {
+        Ok(spin_lock) => {
+            let buffer = spin_lock.lock();
+            let decode: [u8; 2] = buffer[0..=1].try_into().unwrap();
+            let min: [u8; 2] = buffer[2..=3].try_into().unwrap();
+            let max: [u8; 2] = buffer[4..=5].try_into().unwrap();
+            logln!("found serial port:");
+            logln!("decode: {:#x}", u16::from_le_bytes(decode));
+            logln!("min: {:#x} max: {:#x}", u16::from_le_bytes(min), u16::from_le_bytes(max));
+            logln!("aln: {:#x} len: {:#x}", &buffer[6], &buffer[7]);
+        }
+        Err(_) => {}
+    };
 
     // register now unused acpi memory (as it is no longer needed)
     for descriptor in descriptors.clone() {

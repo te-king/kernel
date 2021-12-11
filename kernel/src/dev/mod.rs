@@ -3,6 +3,7 @@ use alloc::string::String;
 
 pub mod processor;
 
+
 pub trait Device {
-    fn name(&self) -> String;
+    fn name(&self) -> &str;
 }

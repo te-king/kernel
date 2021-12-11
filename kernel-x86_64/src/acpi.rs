@@ -9,7 +9,6 @@ use aml::{AmlContext, AmlError, DebugVerbosity, Handler};
 use uefi::table::Runtime;
 use kernel::dev::Device;
 use kernel::logln;
-use crate::devices::{InterruptController, Processor, SerialPort};
 
 
 #[derive(Copy, Clone)]
@@ -107,8 +106,7 @@ impl Handler for IdentityMappedAcpiHandler {
 }
 
 
-pub fn debug_acpi_aml(system_table: &SystemTable<Runtime>) -> Result<AmlContext, AmlError> {
-
+pub fn create_aml_context(system_table: &SystemTable<Runtime>) -> Result<AmlContext, AmlError> {
     // create aml parser context
     let mut context = AmlContext::new(
         box IdentityMappedAcpiHandler,
