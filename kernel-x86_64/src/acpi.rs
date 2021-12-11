@@ -1,3 +1,4 @@
+use alloc::borrow::ToOwned;
 use alloc::boxed::Box;
 use core::ptr::{NonNull, slice_from_raw_parts};
 use acpi::{AcpiHandler, AcpiTables, PhysicalMapping};
@@ -5,9 +6,9 @@ use uefi::prelude::*;
 use uefi::table::cfg::{ACPI2_GUID, ACPI_GUID};
 use alloc::vec;
 use alloc::vec::Vec;
-use aml::{AmlContext, AmlError, DebugVerbosity, Handler};
+use aml::{AmlContext, AmlError, AmlName, DebugVerbosity, Handler, LevelType};
 use uefi::table::Runtime;
-use kernel::dev::Device;
+use kernel::dev::PlugAndPlayDevice;
 use kernel::logln;
 
 
@@ -20,93 +21,93 @@ impl AcpiHandler for IdentityMappedAcpiHandler {
         PhysicalMapping::new(physical_address, addr, size, size, IdentityMappedAcpiHandler)
     }
 
-    fn unmap_physical_region<T>(region: &PhysicalMapping<Self, T>) {}
+    fn unmap_physical_region<T>(_region: &PhysicalMapping<Self, T>) {}
 }
 
 impl Handler for IdentityMappedAcpiHandler {
-    fn read_u8(&self, address: usize) -> u8 {
+    fn read_u8(&self, _address: usize) -> u8 {
         todo!()
     }
 
-    fn read_u16(&self, address: usize) -> u16 {
+    fn read_u16(&self, _address: usize) -> u16 {
         todo!()
     }
 
-    fn read_u32(&self, address: usize) -> u32 {
+    fn read_u32(&self, _address: usize) -> u32 {
         todo!()
     }
 
-    fn read_u64(&self, address: usize) -> u64 {
+    fn read_u64(&self, _address: usize) -> u64 {
         todo!()
     }
 
-    fn write_u8(&mut self, address: usize, value: u8) {
+    fn write_u8(&mut self, _address: usize, _value: u8) {
         todo!()
     }
 
-    fn write_u16(&mut self, address: usize, value: u16) {
+    fn write_u16(&mut self, _address: usize, _value: u16) {
         todo!()
     }
 
-    fn write_u32(&mut self, address: usize, value: u32) {
+    fn write_u32(&mut self, _address: usize, _value: u32) {
         todo!()
     }
 
-    fn write_u64(&mut self, address: usize, value: u64) {
+    fn write_u64(&mut self, _address: usize, _value: u64) {
         todo!()
     }
 
-    fn read_io_u8(&self, port: u16) -> u8 {
+    fn read_io_u8(&self, _port: u16) -> u8 {
         todo!()
     }
 
-    fn read_io_u16(&self, port: u16) -> u16 {
+    fn read_io_u16(&self, _port: u16) -> u16 {
         todo!()
     }
 
-    fn read_io_u32(&self, port: u16) -> u32 {
+    fn read_io_u32(&self, _port: u16) -> u32 {
         todo!()
     }
 
-    fn write_io_u8(&self, port: u16, value: u8) {
+    fn write_io_u8(&self, _port: u16, _value: u8) {
         todo!()
     }
 
-    fn write_io_u16(&self, port: u16, value: u16) {
+    fn write_io_u16(&self, _port: u16, _value: u16) {
         todo!()
     }
 
-    fn write_io_u32(&self, port: u16, value: u32) {
+    fn write_io_u32(&self, _port: u16, _value: u32) {
         todo!()
     }
 
-    fn read_pci_u8(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16) -> u8 {
+    fn read_pci_u8(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16) -> u8 {
         todo!()
     }
 
-    fn read_pci_u16(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16) -> u16 {
+    fn read_pci_u16(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16) -> u16 {
         todo!()
     }
 
-    fn read_pci_u32(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16) -> u32 {
+    fn read_pci_u32(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16) -> u32 {
         todo!()
     }
 
-    fn write_pci_u8(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16, value: u8) {
+    fn write_pci_u8(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16, _value: u8) {
         todo!()
     }
 
-    fn write_pci_u16(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16, value: u16) {
+    fn write_pci_u16(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16, _value: u16) {
         todo!()
     }
 
-    fn write_pci_u32(&self, segment: u16, bus: u8, device: u8, function: u8, offset: u16, value: u32) {
+    fn write_pci_u32(&self, _segment: u16, _bus: u8, _device: u8, _function: u8, _offset: u16, _value: u32) {
         todo!()
     }
 }
 
 
-pub fn create_aml_context(system_table: &SystemTable<Runtime>) -> Result<AmlContext, AmlError> {
+pub fn read_acpi_tables(system_table: &SystemTable<Runtime>) -> Result<AmlContext, AmlError> {
     // create aml parser context
     let mut context = AmlContext::new(
         box IdentityMappedAcpiHandler,
@@ -144,4 +145,34 @@ pub fn create_aml_context(system_table: &SystemTable<Runtime>) -> Result<AmlCont
     }
 
     Ok(context)
+}
+
+
+pub fn aml_devices(system_table: &SystemTable<Runtime>) -> Result<Vec<PlugAndPlayDevice>, AmlError> {
+    let mut result: Vec<PlugAndPlayDevice> = vec![];
+
+    let mut aml = read_acpi_tables(system_table)?;
+
+    aml.namespace
+        .clone()
+        .traverse(|a, b| {
+            match b.typ {
+                LevelType::Device => {
+                    let path = a.as_string();
+
+                    let hid = aml.namespace
+                        .search(&AmlName::from_str("_HID").unwrap(), a)
+                        .and_then(|(a, b)| aml.namespace.get(b))
+                        .and_then(|a| a.as_string(&aml))
+                        .ok();
+
+                    result.push(PlugAndPlayDevice { path, hid });
+                }
+                _ => {}
+            };
+
+            Ok(true)
+        });
+
+    Ok(result)
 }

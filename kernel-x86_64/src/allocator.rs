@@ -1,3 +1,4 @@
+use core::ptr::{slice_from_raw_parts, slice_from_raw_parts_mut};
 use uefi::table::boot::{MemoryDescriptor, MemoryType};
 use buddy_system_allocator::LockedHeap;
 
@@ -18,4 +19,15 @@ pub unsafe fn register_descriptor(descriptor: MemoryDescriptor) {
             descriptor.phys_start as usize,
             descriptor.phys_start as usize + descriptor.page_count as usize * 4096,
         )
+}
+
+pub unsafe fn register_descriptor_safe(descriptor: MemoryDescriptor) {
+    let slc = &mut *slice_from_raw_parts_mut(
+        descriptor.phys_start as usize as *mut u8,
+        descriptor.page_count as usize * 4096,
+    );
+
+    slc.fill(0u8);
+
+    register_descriptor(descriptor);
 }

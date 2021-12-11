@@ -9,8 +9,9 @@ extern crate alloc;
 
 
 pub mod dev;
-pub mod proc;
 pub mod log;
+pub mod proc;
+pub mod vfs;
 
 
 // kernel main

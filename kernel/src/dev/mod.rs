@@ -1,9 +1,8 @@
 use alloc::string::String;
 
 
-pub mod processor;
-
-
-pub trait Device {
-    fn name(&self) -> &str;
+#[derive(Debug)]
+pub struct PlugAndPlayDevice {
+    pub path: String,
+    pub hid: Option<String>,
 }
