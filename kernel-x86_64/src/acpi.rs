@@ -7,8 +7,8 @@ use alloc::vec;
 use alloc::vec::Vec;
 use aml::{AmlContext, AmlError, DebugVerbosity, Handler};
 use uefi::table::Runtime;
-use libertyos_kernel::dev::Device;
-use libertyos_kernel::logln;
+use kernel::dev::Device;
+use kernel::logln;
 use crate::devices::{InterruptController, Processor, SerialPort};
 
 

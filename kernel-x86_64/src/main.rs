@@ -10,9 +10,9 @@ use aml::{AmlContext, AmlError};
 use uart_16550::SerialPort;
 use uefi::table::boot::{MemoryDescriptor, MemoryType};
 use uefi::prelude::*;
-use libertyos_kernel::log::STDOUT;
-use libertyos_kernel::logln;
-use libertyos_kernel::proc::{EventRegister, Process, VirtualMemory};
+use kernel::log::STDOUT;
+use kernel::logln;
+use kernel::proc::{EventRegister, Process, VirtualMemory};
 
 mod acpi;
 mod allocator;

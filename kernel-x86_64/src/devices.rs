@@ -4,7 +4,7 @@ use alloc::string::String;
 use acpi::InterruptModel;
 use acpi::platform::interrupt::Apic;
 use acpi::platform::ProcessorInfo;
-use libertyos_kernel::dev::Device;
+use kernel::dev::Device;
 
 
 pub struct SerialPort(uart_16550::SerialPort);

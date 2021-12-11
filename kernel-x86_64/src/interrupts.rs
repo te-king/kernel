@@ -1,6 +1,6 @@
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
-use libertyos_kernel::logln;
-use libertyos_kernel::proc::EventRegister;
+use kernel::logln;
+use kernel::proc::EventRegister;
 
 
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: InterruptStackFrame) {
