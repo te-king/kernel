@@ -1,15 +1,12 @@
-use alloc::borrow::ToOwned;
-use alloc::boxed::Box;
 use core::ptr::{NonNull, slice_from_raw_parts};
-use acpi::{AcpiHandler, AcpiTables, PhysicalMapping};
+use acpi::{AcpiHandler, AcpiTables, HpetInfo, PhysicalMapping};
 use uefi::prelude::*;
 use uefi::table::cfg::{ACPI2_GUID, ACPI_GUID};
 use alloc::vec;
 use alloc::vec::Vec;
 use aml::{AmlContext, AmlError, AmlName, DebugVerbosity, Handler, LevelType};
 use uefi::table::Runtime;
-use kernel::dev::PlugAndPlayDevice;
-use kernel::logln;
+use crate::dev::Device;
 
 
 #[derive(Copy, Clone)]
@@ -133,6 +130,9 @@ pub fn read_acpi_tables(system_table: &SystemTable<Runtime>) -> Result<AmlContex
 
     unsafe {
         if let Some(table) = table {
+            if let Ok(table) = HpetInfo::new(&table) {
+                
+            }
             if let Some(dsdt) = table.dsdt {
                 let stream = slice_from_raw_parts(dsdt.address as *const u8, dsdt.length as usize);
                 context.parse_table(&*stream)?;
@@ -148,8 +148,8 @@ pub fn read_acpi_tables(system_table: &SystemTable<Runtime>) -> Result<AmlContex
 }
 
 
-pub fn aml_devices(system_table: &SystemTable<Runtime>) -> Result<Vec<PlugAndPlayDevice>, AmlError> {
-    let mut result: Vec<PlugAndPlayDevice> = vec![];
+pub fn aml_devices(system_table: &SystemTable<Runtime>) -> Result<Vec<Device>, AmlError> {
+    let mut result: Vec<Device> = vec![];
 
     let mut aml = read_acpi_tables(system_table)?;
 
@@ -166,7 +166,7 @@ pub fn aml_devices(system_table: &SystemTable<Runtime>) -> Result<Vec<PlugAndPla
                         .and_then(|a| a.as_string(&aml))
                         .ok();
 
-                    result.push(PlugAndPlayDevice { path, hid });
+                    result.push(Device { path, hid });
                 }
                 _ => {}
             };

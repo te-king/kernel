@@ -1,17 +1,18 @@
 #![feature(custom_test_frameworks)]
+#![feature(box_syntax, abi_efiapi, abi_x86_interrupt, alloc_error_handler, asm)]
 #![reexport_test_harness_main = "test_main"]
 #![test_runner(test_runner)]
 
 #![no_std]
-
+#![no_main]
 
 extern crate alloc;
 
-
+mod arch;
 pub mod dev;
 pub mod log;
 pub mod proc;
-pub mod vfs;
+pub mod fs;
 
 
 // kernel main

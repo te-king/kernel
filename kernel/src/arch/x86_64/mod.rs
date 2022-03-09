@@ -1,22 +1,13 @@
-#![feature(box_syntax, abi_efiapi, abi_x86_interrupt, alloc_error_handler, asm)]
-
-#![no_main]
-#![no_std]
-
-extern crate alloc;
-
 use core::ptr::slice_from_raw_parts_mut;
-use aml::{AmlContext, AmlError, AmlHandle, AmlName};
 use uart_16550::SerialPort;
-use uefi::table::boot::{MemoryDescriptor, MemoryType};
+use uefi::table::boot::MemoryType;
 use uefi::prelude::*;
-use kernel::log::STDOUT;
-use kernel::logln;
-use kernel::proc::{EventRegister, Process, VirtualMemory};
+use crate::log::STDOUT;
+use crate::{kernel_main, logln};
 
 mod acpi;
 mod allocator;
-mod interrupts;
+mod interrupt;
 mod memory;
 mod panic;
 
@@ -30,10 +21,12 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
 
     let buf_store = system_table
         .boot_services()
-        .allocate_pool(MemoryType::LOADER_DATA, buf_size + 8 * core::mem::size_of::<MemoryDescriptor>())
+        .allocate_pool(MemoryType::LOADER_DATA, buf_size.map_size + buf_size.entry_size)
         .expect_success("failed to allocate memory map storage");
 
-    let buf = unsafe { &mut *slice_from_raw_parts_mut(buf_store, buf_size) };
+    let buf = unsafe {
+        &mut *slice_from_raw_parts_mut(buf_store, buf_size.map_size + buf_size.entry_size)
+    };
 
     // retrieve memory map, exit boot services, and add to allocator
     let (system_table, descriptors) = system_table
@@ -93,6 +86,6 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         }
     }
 
-    kernel::kernel_main();
+    kernel_main();
     panic!("execution endpoint")
 }

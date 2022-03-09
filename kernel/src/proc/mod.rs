@@ -1,24 +1,29 @@
-///
-/// Represents a generic table that stores predefined actions
-/// for handling events.
-/// An example implementation is the x86_64 IDT
-///
-pub trait EventRegister {}
-
+use core::pin::Pin;
+use core::task::{Context, Poll};
 
 ///
-/// Represents a generic mapping from kernel address space
-/// to process address space.
-/// An example implementation is the x86_64 PageTable.
-///
-pub trait VirtualMemory {}
+/// The reasons why a process has yielded to the kernel.
+/// These are the basis of syscall handling.
+pub enum YieldReason {
+    /// The process completed its time slice.
+    TimeSlice,
+    /// THe process gave up its time slice
+    Cooperative,
+    /// The process needs memory to be allocated to continue
+    Allocate {
+        output: usize,
+        length: usize,
+    },
+    /// The process needs memory to be freed to continue
+    Free {
+        input: usize,
+        length: usize,
+    },
+}
 
-
 ///
-/// Represents a process running on the machine.
-///
-pub struct Process<ER: EventRegister, VM: VirtualMemory> {
-    id: u64,
-    event_register: ER,
-    virtual_memory: VM,
+/// A process represents a running program sandboxed from the rest of the system.
+/// It is polled to completion like a future.
+pub trait Process {
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<YieldReason>;
 }
