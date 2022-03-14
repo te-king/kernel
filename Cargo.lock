@@ -84,6 +84,7 @@ dependencies = [
  "acpi",
  "aml",
  "buddy_system_allocator",
+ "lolid",
  "modular-bitfield",
  "spin 0.9.2",
  "uart_16550",
@@ -107,6 +108,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "lolid"
+version = "1.0.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9d0bbae6e3986e7b1b1e473add9000a087ebd358cdef8af1f39b6ac4622e72b"
+dependencies = [
+ "str-buf",
+ "wy",
 ]
 
 [[package]]
@@ -200,6 +211,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
+name = "str-buf"
+version = "2.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d3f6746ae4fb2c851c6ad2fdaa1090f6777315bc7522b2a2bc5897e091eefb2"
+
+[[package]]
 name = "syn"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -269,6 +286,12 @@ name = "volatile"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4c2dbd44eb8b53973357e6e207e370f0c1059990df850aca1eca8947cf464f0"
+
+[[package]]
+name = "wy"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3dede6c845dff0b268e7b0c12bc92c97d1e9aafdce335e8e1d0eadbd52c7357"
 
 [[package]]
 name = "wyz"

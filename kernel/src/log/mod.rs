@@ -3,15 +3,19 @@ use alloc::boxed::Box;
 use spin::Mutex;
 
 
-pub static STDOUT: Mutex<Option<Box<dyn Write + Send>>> = Mutex::new(None);
+static LOG_OUT: Mutex<Option<Box<dyn Write + Send>>> = Mutex::new(None);
 
 
 #[doc(hidden)]
 pub fn _log(args: core::fmt::Arguments) {
-    match &mut *STDOUT.lock() {
+    match &mut *LOG_OUT.lock() {
         None => {}
         Some(writer) => { writer.write_fmt(args); }
     }
+}
+
+pub fn install_logger(writer: Box<dyn Write + Send>) {
+	*LOG_OUT.lock() = Some(writer);
 }
 
 

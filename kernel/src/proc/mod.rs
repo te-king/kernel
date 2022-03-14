@@ -1,3 +1,4 @@
+use alloc::boxed::Box;
 use core::pin::Pin;
 use core::task::{Context, Poll};
 
@@ -7,13 +8,16 @@ use core::task::{Context, Poll};
 pub enum YieldReason {
     /// The process completed its time slice.
     TimeSlice,
-    /// THe process gave up its time slice
+
+    /// The process gave up its time slice
     Cooperative,
+
     /// The process needs memory to be allocated to continue
     Allocate {
         output: usize,
         length: usize,
     },
+
     /// The process needs memory to be freed to continue
     Free {
         input: usize,
@@ -24,6 +28,6 @@ pub enum YieldReason {
 ///
 /// A process represents a running program sandboxed from the rest of the system.
 /// It is polled to completion like a future.
-pub trait Process {
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<YieldReason>;
+pub trait Process<'a> {
+    fn resume(self: Pin<&mut Self>) -> Poll<YieldReason>;
 }
