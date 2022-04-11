@@ -5,9 +5,9 @@ use uart_16550::SerialPort;
 use uefi::table::boot::MemoryType;
 use uefi::prelude::*;
 use uefi::table::runtime::TimeCapabilities;
-use crate::log::install_logger;
+use kernel::dev::read_acpi_tables;
+use kernel::log::install_logger;
 use crate::{Device, kernel_main, logln};
-use crate::dev::read_acpi_tables;
 
 mod allocator;
 mod interrupt;

@@ -1,33 +1,75 @@
 use alloc::boxed::Box;
-use core::pin::Pin;
-use core::task::{Context, Poll};
+use alloc::{format, vec};
+use alloc::sync::Arc;
+use core::alloc::Layout;
+use core::fmt::{Debug, Formatter};
+use lolid::Uuid;
+use x86_64::structures::idt::InterruptDescriptorTable;
+use mem::MemoryMap;
+use int::InterruptMap;
 
-///
-/// The reasons why a process has yielded to the kernel.
-/// These are the basis of syscall handling.
-pub enum YieldReason {
-    /// The process completed its time slice.
-    TimeSlice,
+mod mem;
+mod int;
 
-    /// The process gave up its time slice
-    Cooperative,
 
-    /// The process needs memory to be allocated to continue
-    Allocate {
-        output: usize,
-        length: usize,
+pub struct ThreadState {
+    int: InterruptDescriptorTable,
+    mem: Box<[u8]>,
+}
+
+impl ThreadState {
+    pub fn new() -> Self {
+        Self {
+            int: InterruptDescriptorTable::new(),
+            mem: vec![0u8; 4096].into_boxed_slice(),
+        }
+    }
+}
+
+
+pub enum ThreadContinuation {
+    /// The thread has exited.
+    Exited {
+        exit_code: i32
     },
 
-    /// The process needs memory to be freed to continue
-    Free {
-        input: usize,
-        length: usize,
+    /// The thread has yielded control.
+    Waiting {
+        state: ThreadState,
+        resume: &'static dyn Fn(ThreadState) -> ThreadContinuation,
+    },
+
+    /// The thread is waiting for an allocation to be made,
+    /// placed within its process state, and passed in.
+    WaitingAlloc {
+        layout: Layout,
+        state: ThreadState,
+        resume: &'static dyn Fn(ThreadState, *mut ()) -> ThreadContinuation,
+    },
+
+    /// The thread is waiting for an address to be freed.
+    WaitingFree {
+        address: *mut (),
+        layout: Layout,
+        state: ThreadState,
+        resume: &'static dyn Fn(ThreadState) -> ThreadContinuation,
     },
 }
 
-///
-/// A process represents a running program sandboxed from the rest of the system.
-/// It is polled to completion like a future.
-pub trait Process<'a> {
-    fn resume(self: Pin<&mut Self>) -> Poll<YieldReason>;
+fn scratch() {
+    todo!()
+
+
+    // -- create process
+
+    // set thread idt
+    // set page table
+    // set tss
+    // iret to process entry in ring3
+    // (wait for return)
+    // figure out what caused an interrupt,
+    // create a continuation
+    // enqueue continuation in whatever task pool is needed
+
+    // repeat until continuation is "Exited"
 }
