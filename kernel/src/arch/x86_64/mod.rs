@@ -1,13 +1,19 @@
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::ptr::slice_from_raw_parts_mut;
+use lolid::Uuid;
 use uart_16550::SerialPort;
 use uefi::table::boot::MemoryType;
 use uefi::prelude::*;
 use uefi::table::runtime::TimeCapabilities;
+use x86_64::registers::control::Cr3;
+use x86_64::structures::paging::PageTable;
 use kernel::dev::read_acpi_tables;
 use kernel::log::install_logger;
+use kernel::proc::int::InterruptImpl;
+use kernel::proc::ProcessState;
 use crate::{Device, kernel_main, logln};
+use crate::arch::arch::memory::IdentityMappedPageTable;
 
 mod allocator;
 mod interrupt;
@@ -52,16 +58,7 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         install_logger(box SerialPort::new(0x03f8));
     }
 
-    // read aml
-    // we dont know where the serial port is yet so we get no stdout
-    let devices = read_acpi_tables(&system_table);
-
-    for device in devices {
-        logln!("{:?}", device.name());
-        for component in device.components() {
-            logln!("\t{:?}", component.name());
-        }
-    }
+    // read aml here, load into controlled memory
 
     // register now unused acpi memory (as it is no longer needed)
     for descriptor in descriptors.clone() {
@@ -71,6 +68,18 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         }
     }
 
-    kernel_main();
+    unsafe {
+        let (pp, _) = Cr3::read();
+        let page_table = IdentityMappedPageTable::new(pp.start_address());
+
+        let proc = ProcessState::new(
+            Uuid::prng(),
+            page_table,
+            InterruptImpl,
+        );
+
+        kernel_main(proc);
+    }
+
     panic!("execution endpoint")
 }

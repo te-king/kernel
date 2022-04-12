@@ -22,22 +22,21 @@ use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use kernel::logln;
 use kernel::dev::Device;
 use kernel::fs::{File, FileSystem};
-use kernel::proc::ThreadState;
+use kernel::proc::{ProcessState, ThreadState};
+use kernel::proc::int::InterruptModel;
+use kernel::proc::mem::MemoryModel;
 
 
 // kernel main
-pub fn kernel_main() -> usize {
+pub fn kernel_main<MM: MemoryModel, IM: InterruptModel>(proc: ProcessState<MM, IM>) -> usize {
     logln!("KERNEL  {}", env!("CARGO_PKG_NAME"));
     logln!("VERSION {}", env!("CARGO_PKG_VERSION"));
 
     #[cfg(test)] crate::test_main();
 
-    0
-}
+    logln!("{:?}", proc);
 
-extern "x86-interrupt" fn breakpoint_handler(stack_frame: InterruptStackFrame)
-{
-    logln!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame);
+    0
 }
 
 
