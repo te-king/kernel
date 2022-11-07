@@ -38,7 +38,11 @@ impl<MM: MemoryModel, IM: InterruptModel> Debug for ProcessState<MM, IM> {
 
 impl<MM: MemoryModel, IM: InterruptModel> ProcessState<MM, IM> {
     pub fn new(id: Uuid, memory: MM, interrupt: IM) -> Self {
-        Self { id, memory, interrupt }
+        Self {
+            id,
+            memory: RwLock::new(memory),
+            interrupt: RwLock::new(interrupt),
+        }
     }
 }
 

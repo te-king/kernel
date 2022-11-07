@@ -34,7 +34,7 @@ pub struct FileSystem {
 
 impl FileSystem {
     pub fn spawn(&mut self) -> &mut File {
-        self.items.entry(Uuid::prng()).or_default()
+        self.items.entry(Uuid::v4_prng()).or_default()
     }
 
     pub fn lookup(&self, name: &str) -> Option<&File> {

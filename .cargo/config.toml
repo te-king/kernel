@@ -7,4 +7,4 @@ rustflags = ["-Cpanic=abort"]
 
 [target.x86_64-unknown-uefi]
 rustflags = ["-Cpanic=abort"]
-runner = "bootuefi"
+runner = "qemu-system-x86_64 -bios ./OVMF.fd -serial stdio -kernel"

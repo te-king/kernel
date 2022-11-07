@@ -112,12 +112,12 @@ dependencies = [
 
 [[package]]
 name = "lolid"
-version = "1.0.9"
+version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9d0bbae6e3986e7b1b1e473add9000a087ebd358cdef8af1f39b6ac4622e72b"
+checksum = "c55a7220576dcefbd0e7a6d10fbe4278474a7183e4aab42d8767327bc2a12c74"
 dependencies = [
+ "squares-rnd",
  "str-buf",
- "wy",
 ]
 
 [[package]]
@@ -211,6 +211,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "squares-rnd"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd682dd4b82f9b16f415b24d28deb4bcee07ed5b1614b0e97c65dc10a1bcdfb4"
+
+[[package]]
 name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -218,9 +224,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "str-buf"
-version = "2.0.4"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d3f6746ae4fb2c851c6ad2fdaa1090f6777315bc7522b2a2bc5897e091eefb2"
+checksum = "e75b72ee54e2f93c3ea1354066162be893ee5e25773ab743de3e088cecbb4f31"
 
 [[package]]
 name = "syn"
@@ -260,9 +266,9 @@ dependencies = [
 
 [[package]]
 name = "uefi"
-version = "0.14.0"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a21398a404f6fa14f6df34756714874eccdf73587eba863cb5bd55d8bada7496"
+checksum = "1681124c58206560962ed40f54603f0f8364dc4ee747b4f5adb8edf2f48a00d5"
 dependencies = [
  "bitflags",
  "log",
@@ -272,9 +278,9 @@ dependencies = [
 
 [[package]]
 name = "uefi-macros"
-version = "0.5.0"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7006b85ae8acaf2b448c5f1630a434caaacaedcc0907f12404e4e31c9dafcdb3"
+checksum = "3c3cc7f4faa361e529a6c92683e8e5c2a8a1522879d0f65fa924197e2b268b93"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -294,12 +300,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4c2dbd44eb8b53973357e6e207e370f0c1059990df850aca1eca8947cf464f0"
 
 [[package]]
-name = "wy"
-version = "1.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3dede6c845dff0b268e7b0c12bc92c97d1e9aafdce335e8e1d0eadbd52c7357"
-
-[[package]]
 name = "wyz"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -310,9 +310,9 @@ dependencies = [
 
 [[package]]
 name = "x86_64"
-version = "0.14.9"
+version = "0.14.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "958cd5cb28e720db2f59ee9dc4235b5f82a183d079fb0e6caf43ad074cfdc66a"
+checksum = "100555a863c0092238c2e0e814c1096c1e5cf066a309c696a87e907b5f8c5d69"
 dependencies = [
  "bit_field",
  "bitflags",

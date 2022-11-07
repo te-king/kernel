@@ -23,6 +23,7 @@ mod panic;
 
 #[entry]
 fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status {
+
     // allocate buf for memory map
     let buf_size = system_table
         .boot_services()
@@ -31,7 +32,7 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
     let buf_store = system_table
         .boot_services()
         .allocate_pool(MemoryType::LOADER_DATA, buf_size.map_size + buf_size.entry_size)
-        .expect_success("failed to allocate memory map storage");
+        .expect("failed to allocate memory map storage");
 
     let buf = unsafe {
         &mut *slice_from_raw_parts_mut(buf_store, buf_size.map_size + buf_size.entry_size)
@@ -40,7 +41,7 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
     // retrieve memory map, exit boot services, and add to allocator
     let (system_table, descriptors) = system_table
         .exit_boot_services(handle, buf)
-        .expect_success("failed to exit boot services");
+        .expect("failed to exit boot services");
 
     // register conventional memory
     for descriptor in descriptors.clone() {
@@ -73,7 +74,7 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         let page_table = IdentityMappedPageTable::new(pp.start_address());
 
         let proc = ProcessState::new(
-            Uuid::prng(),
+            Uuid::v4_prng(),
             page_table,
             InterruptImpl,
         );

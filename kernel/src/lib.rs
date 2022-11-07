@@ -3,7 +3,6 @@
 #![feature(abi_efiapi)]
 #![feature(abi_x86_interrupt, )]
 #![feature(alloc_error_handler)]
-#![feature(asm)]
 
 #![no_std]
 #![no_main]
