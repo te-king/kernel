@@ -1,18 +1,20 @@
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::ptr::slice_from_raw_parts_mut;
+
 use lolid::Uuid;
 use uart_16550::SerialPort;
-use uefi::table::boot::MemoryType;
 use uefi::prelude::*;
+use uefi::table::boot::MemoryType;
 use uefi::table::runtime::TimeCapabilities;
 use x86_64::registers::control::Cr3;
 use x86_64::structures::paging::PageTable;
-use kernel::dev::read_acpi_tables;
+
 use kernel::log::install_logger;
 use kernel::proc::int::InterruptImpl;
 use kernel::proc::ProcessState;
-use crate::{Device, kernel_main, logln};
+
+use crate::{kernel_main, logln};
 use crate::arch::arch::memory::IdentityMappedPageTable;
 
 mod allocator;

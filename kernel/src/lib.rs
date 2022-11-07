@@ -9,7 +9,5 @@
 
 extern crate alloc;
 
-pub mod dev;
 pub mod log;
 pub mod proc;
-pub mod fs;

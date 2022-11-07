@@ -8,14 +8,15 @@ static LOG_OUT: Mutex<Option<Box<dyn Write + Send>>> = Mutex::new(None);
 
 #[doc(hidden)]
 pub fn _log(args: core::fmt::Arguments) {
-    match &mut *LOG_OUT.lock() {
-        None => {}
-        Some(writer) => { writer.write_fmt(args); }
+    if let Some(writer) = &mut *LOG_OUT.lock() {
+        writer
+            .write_fmt(args)
+            .unwrap();
     }
 }
 
 pub fn install_logger(writer: Box<dyn Write + Send>) {
-	*LOG_OUT.lock() = Some(writer);
+    *LOG_OUT.lock() = Some(writer);
 }
 
 

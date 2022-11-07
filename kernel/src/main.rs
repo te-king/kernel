@@ -20,8 +20,6 @@ use alloc::vec;
 use x86_64::instructions::interrupts::int3;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use kernel::logln;
-use kernel::dev::Device;
-use kernel::fs::{File, FileSystem};
 use kernel::proc::{ProcessState, ThreadState};
 use kernel::proc::int::InterruptModel;
 use kernel::proc::mem::MemoryModel;
