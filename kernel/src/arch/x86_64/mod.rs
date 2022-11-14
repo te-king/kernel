@@ -9,18 +9,16 @@ use uefi::table::boot::MemoryType;
 use uefi::table::runtime::TimeCapabilities;
 use x86_64::registers::control::Cr3;
 use x86_64::structures::paging::PageTable;
-
-use kernel::log::install_logger;
-use kernel::proc::int::InterruptImpl;
+use kernel::log::set_log_out;
 use kernel::proc::ProcessState;
 
 use crate::{kernel_main, logln};
-use crate::arch::arch::memory::IdentityMappedPageTable;
 
 mod allocator;
-mod interrupt;
-mod memory;
+mod int;
+mod mem;
 mod panic;
+mod proc;
 
 
 #[entry]
@@ -41,7 +39,7 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
     };
 
     // retrieve memory map, exit boot services, and add to allocator
-    let (system_table, descriptors) = system_table
+    let (_, descriptors) = system_table
         .exit_boot_services(handle, buf)
         .expect("failed to exit boot services");
 
@@ -53,15 +51,10 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
         }
     }
 
-    // create static serial port.
     unsafe {
-        // it looks like 0x03fa is defined in the ISA DSDT for QEMU.
-        // see https://github.com/pebble/qemu/blob/master/hw/i386/acpi-dsdt-isa.dsl
-        // this is looks like a standard.
-        install_logger(box SerialPort::new(0x03f8));
+        let logger = box SerialPort::new(0x03f8);
+        set_log_out(logger);
     }
-
-    // read aml here, load into controlled memory
 
     // register now unused acpi memory (as it is no longer needed)
     for descriptor in descriptors.clone() {
@@ -72,16 +65,13 @@ fn x86_64_entrypoint(handle: Handle, system_table: SystemTable<Boot>) -> Status 
     }
 
     unsafe {
-        let (pp, _) = Cr3::read();
-        let page_table = IdentityMappedPageTable::new(pp.start_address());
+        let idt = int::KernelInterruptModel::new();
+        let pt = mem::KernelMemoryModel::from_cr3();
 
-        let proc = ProcessState::new(
-            Uuid::v4_prng(),
-            page_table,
-            InterruptImpl,
-        );
+        let proc = box proc::KernelProcessState::new(idt, pt);
+        // proc.continue_execution();
 
-        kernel_main(proc);
+        kernel_main(&*proc);
     }
 
     panic!("execution endpoint")

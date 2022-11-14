@@ -5,7 +5,7 @@
 
 use core::panic::PanicInfo;
 use x86_64::instructions::hlt;
-use crate::logln;
+use kernel::logln;
 
 
 #[panic_handler]
